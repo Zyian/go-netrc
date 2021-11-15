@@ -605,3 +605,17 @@ func TestMissingPassword(t *testing.T) {
 	m.UpdateLogin("joeschmoe2")
 	m.UpdatePassword("TOKEN2")
 }
+
+func TestMissingPasswordErr(t *testing.T) {
+	b := "machine github.com\n  login joeschmoe\n  \n"
+	nrc, err := Parse(strings.NewReader(b))
+	if err != nil {
+		t.Fatal(err)
+	}
+	m := nrc.FindMachine("github.com")
+	m.UpdateLogin("joeschmoe2")
+	err = m.TryUpdatePassword("TOKEN2")
+	if err == nil {
+		t.Errorf("Expected a panic (.netrc is corrupt - github.com has a missing or invalid password token)")
+	}
+}

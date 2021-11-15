@@ -219,6 +219,16 @@ func (m *Machine) UpdatePassword(newpass string) {
 	updateTokenValue(m.passtoken, newpass)
 }
 
+// TryUpdatePassword sets the password for the Machine m. Returns an error rather than panic
+func (m *Machine) TryUpdatePassword(newpass string) error {
+	m.Password = newpass
+	if m.passtoken == nil {
+		return fmt.Errorf(".netrc is corrupt - %s has a missing or invalid password token", m.Name)
+	}
+	updateTokenValue(m.passtoken, newpass)
+	return nil
+}
+
 // UpdateLogin sets the login for the Machine m.
 func (m *Machine) UpdateLogin(newlogin string) {
 	m.Login = newlogin
